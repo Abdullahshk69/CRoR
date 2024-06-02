@@ -1333,7 +1333,7 @@ MonoBehaviour:
   unitName: Balls
   maxHP: 100
   attack: 15
-  speed: 3
+  speed: 10
   level: 1
 --- !u!4 &1589740411
 Transform:
@@ -1537,7 +1537,7 @@ MonoBehaviour:
   unitName: Corruption
   maxHP: 50
   attack: 4
-  speed: 2
+  speed: 5
   level: 1
 --- !u!4 &2026917725
 Transform:

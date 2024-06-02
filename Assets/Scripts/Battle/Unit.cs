@@ -16,6 +16,15 @@ public class Unit : MonoBehaviour
         currentHP = maxHP;
     }
 
+    /// <summary>
+    /// The attack system working is dependent on a D20 dice roll.
+    /// A random number is generated. Based on the number, an attack is initiated.
+    /// <para>1 - 3 => Miss</para>
+    /// <para>4 - 10 => Weak</para>
+    /// <para>11 - 17 => Normal</para>
+    /// <para>18 - 20 => Crit</para>
+    /// </summary>
+    /// <returns>Attack</returns>
     public int Attack()
     {
         // roll a d20
@@ -31,17 +40,22 @@ public class Unit : MonoBehaviour
             return attack - (attack * 20 / 100);    // attack - 20%attack
         }
 
-        else if (random20 <= 17)
+        else if (random20 <= 17)    // 11-17
         {
             return attack;
         }
 
-        else
+        else    // 18-20
         {
             return attack * 2;
         }
     }
 
+    /// <summary>
+    /// Deals damage to the unit and returns true if the unit is alive. Otherwise false.
+    /// </summary>
+    /// <param name="damage">Damage to be dealt</param>
+    /// <returns></returns>
     public bool TakeDamage(int damage)
     {
         currentHP -= damage;
@@ -49,6 +63,11 @@ public class Unit : MonoBehaviour
         return currentHP <= 0;
     }
 
+    /// <summary>
+    /// Resets the HP.
+    /// This function can be used if a player flee from a battle in case we want to restore the enemies hp.
+    /// <para>It can also be used when player interacts with a save point</para>
+    /// </summary>
     public void ResetHP()
     {
         currentHP = maxHP;
@@ -78,5 +97,10 @@ public class Unit : MonoBehaviour
     public int GetAttack()
     {
         return attack;
+    }
+
+    public int GetSpeed()
+    {
+        return speed;
     }
 }

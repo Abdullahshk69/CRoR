@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -10,7 +11,7 @@ public enum AttackType { MISS, WEAK, NORMAL, CRIT, MAGIC }
 
 public class BattleSystem : MonoBehaviour
 {
-    private BattleState state;
+    private BattleState BattleState;
     private AttackType attackType;
 
     [Header("GAME OBJECTS")]
@@ -19,6 +20,8 @@ public class BattleSystem : MonoBehaviour
 
     private Unit playerUnit;
     private Unit enemyUnit;
+    private Unit[] turn;
+    int turnIndex;
 
     [Header("UI")]
     [SerializeField] TextMeshProUGUI dialogueText;
@@ -28,11 +31,16 @@ public class BattleSystem : MonoBehaviour
 
     private void Start()
     {
-        state = BattleState.START;
+        BattleState = BattleState.START;
 
         StartCoroutine(SetupBattle());
     }
 
+    /// <summary>
+    /// SetupBattle is responsible for starting and setting up the battle.
+    /// It takes references of player and enemy respectively.
+    /// </summary>
+    /// <returns>Waits for 2 seconds</returns>
     IEnumerator SetupBattle()
     {
         playerUnit = player.GetComponent<Unit>();
@@ -46,18 +54,74 @@ public class BattleSystem : MonoBehaviour
 
         yield return new WaitForSeconds(2f);
 
-        state = BattleState.PLAYERTURN;
-        PlayerTurn();
+        SetTurns();
+        TurnSelector();
     }
 
+    /// <summary>
+    /// SetTurns initializes and orders the turns array.
+    /// It orders the array in descending order, by a Unit's speed attribute
+    /// </summary>
+    void SetTurns()
+    {
+        // populate the turn array
+        turn = new Unit[2];
+        turn[0] = playerUnit;
+        turn[1] = enemyUnit;
+
+        // Reorder the turns in descending order
+        Array.Sort(turn,
+            delegate (Unit x, Unit y) { return y.GetSpeed().CompareTo(x.GetSpeed()); }
+            );
+
+        // Set the turn index to 0
+        turnIndex = 0;
+    }
+
+    /// <summary>
+    /// TurnSelector selects the turn based on the tag of the game object.
+    /// If it is a player's turn, then it calls the PlayerTurn function.
+    /// Otherwise it starts the enemy turn coroutine.
+    /// </summary>
+    void TurnSelector()
+    {
+        // Check the tag of the object
+        // Then call the turn function based on the tag
+        if (turn[turnIndex].tag == "Player")
+        {
+            BattleState = BattleState.PLAYERTURN;
+            PlayerTurn();
+        }
+
+        else if (turn[turnIndex].tag == "Enemy")
+        {
+            BattleState = BattleState.ENEMYTURN;
+            StartCoroutine(EnemyTurn());
+        }
+
+        // Update the turn Index
+        turnIndex++;
+        if (turnIndex == turn.Length)
+        {
+            turnIndex = 0;
+        }
+    }
+
+    /// <summary>
+    /// It only displays a text to let the player know it is their turn
+    /// </summary>
     void PlayerTurn()
     {
+        // Maybe enable buttons in the future when it is the player's turn
         dialogueText.text = "Choose an action";
     }
 
+    /// <summary>
+    /// If attack button is clicked and it is playerturn, then it starts the coroutine PlayerAttack
+    /// </summary>
     public void OnAttackButton()
     {
-        if (state != BattleState.PLAYERTURN)
+        if (BattleState != BattleState.PLAYERTURN)
         {
             return;
         }
@@ -65,6 +129,12 @@ public class BattleSystem : MonoBehaviour
         StartCoroutine(PlayerAttack());
     }
 
+    /// <summary>
+    /// Player attacks an enemy.
+    /// At the moment it is attacking only 1 enemy.
+    /// In the future, we will provide the option to select the enemy to attack.
+    /// </summary>
+    /// <returns>Waits for 1 second</returns>
     IEnumerator PlayerAttack()
     {
         // damage the enemy
@@ -103,18 +173,23 @@ public class BattleSystem : MonoBehaviour
 
         if (isDead)
         {
-            state = BattleState.WON;
+            BattleState = BattleState.WON;
             EndBattle();
         }
         else
         {
-            state = BattleState.ENEMYTURN;
-            StartCoroutine(EnemyTurn());
+            BattleState = BattleState.ENEMYTURN;
+            TurnSelector();
         }
         // Check if the enemy is dead
         // Change state based on what happened
     }
 
+    /// <summary>
+    /// Enemy attacks a player.
+    /// Will randomize the player to be attacked in the Future
+    /// </summary>
+    /// <returns>Waits for 1 second</returns>
     IEnumerator EnemyTurn()
     {
         dialogueText.text = enemyUnit.GetName() + " attacks";
@@ -153,28 +228,35 @@ public class BattleSystem : MonoBehaviour
 
         if (isDead)
         {
-            state = BattleState.LOST;
+            BattleState = BattleState.LOST;
             EndBattle();
         }
         else
         {
-            state = BattleState.PLAYERTURN;
-            PlayerTurn();
+            BattleState = BattleState.PLAYERTURN;
+            TurnSelector();
         }
     }
 
+    /// <summary>
+    /// A generic function showing the outcome of a battle
+    /// </summary>
     void EndBattle()
     {
-        if (state == BattleState.WON)
+        if (BattleState == BattleState.WON)
         {
             dialogueText.text = "You won the battle!";
         }
-        else if (state == BattleState.LOST)
+        else if (BattleState == BattleState.LOST)
         {
             dialogueText.text = "You lost the battle!";
         }
     }
 
+    /// <summary>
+    /// Gets the type of attack { MISS, WEAK, NORMAL, CRIT, MAGIC }
+    /// </summary>
+    /// <returns>Attack Type</returns>
     public AttackType GetAttackType()
     {
         return attackType;

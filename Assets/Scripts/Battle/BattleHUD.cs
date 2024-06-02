@@ -10,6 +10,10 @@ public class BattleHUD : MonoBehaviour
     [SerializeField] private TextMeshProUGUI levelText;
     [SerializeField] private Slider hpSlider;
 
+    /// <summary>
+    /// Sets the Hud for a particular Unit
+    /// </summary>
+    /// <param name="unit">Detailed data related to the unit</param>
     public void SetHUD(Unit unit)
     {
         nameText.text = unit.GetName();
@@ -18,6 +22,10 @@ public class BattleHUD : MonoBehaviour
         hpSlider.value = unit.GetCurrentHP();
     }
 
+    /// <summary>
+    /// Changes hp slider based on current hp
+    /// </summary>
+    /// <param name="hp">current hp</param>
     public void SetHP(int hp)
     {
         hpSlider.value = hp;
