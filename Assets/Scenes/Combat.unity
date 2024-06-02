@@ -347,7 +347,7 @@ MonoBehaviour:
   player: {fileID: 1589740409}
   enemy: {fileID: 2026917723}
   dialogueText: {fileID: 5175786141839199557}
-  playerHUD: {fileID: 311249187}
+  playerHUD: {fileID: 6736017359624251175}
   enemyHUD: {fileID: 1870553328}
 --- !u!4 &96194328
 Transform:
@@ -733,21 +733,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &311249187
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5029455788993156387}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: afbd56d8de616204c98611d2fc23407c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  nameText: {fileID: 6736017359624251169}
-  levelText: {fileID: 6736017359624251168}
-  hpSlider: {fileID: 6736017359624251167}
 --- !u!1001 &703846945
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1130,6 +1115,17 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &1340974201 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7512381955223244773, guid: ec58a4cd67960d5458af598c3e19d941, type: 3}
+  m_PrefabInstance: {fileID: 125444158}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &1405222217 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7810114779366618856, guid: 790d3da079bb6834aa59200c920de373, type: 3}
@@ -1489,6 +1485,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1706855488}
   m_CullTransparentMesh: 1
+--- !u!1 &1867246607 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8809194273614358821, guid: edbe25b48a1991e4ca7d7ee2b01e48a7, type: 3}
+  m_PrefabInstance: {fileID: 6736017359624251166}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1870553328
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1503,7 +1504,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nameText: {fileID: 6381363354573288803}
   levelText: {fileID: 1706855490}
-  hpSlider: {fileID: 0}
+  hpSlider: {fileID: 1340974201}
 --- !u!1 &2026917723
 GameObject:
   m_ObjectHideFlags: 0
@@ -1775,7 +1776,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3561771079908490239}
   - component: {fileID: 9178490512683386194}
-  - component: {fileID: 311249187}
   - component: {fileID: 9178490512683386195}
   m_Layer: 5
   m_Name: Display
@@ -2239,6 +2239,21 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8066239126098276880, guid: edbe25b48a1991e4ca7d7ee2b01e48a7, type: 3}
   m_PrefabInstance: {fileID: 6736017359624251166}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6736017359624251175
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1867246607}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afbd56d8de616204c98611d2fc23407c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nameText: {fileID: 6736017359624251169}
+  levelText: {fileID: 6736017359624251168}
+  hpSlider: {fileID: 6736017359624251167}
 --- !u!114 &6765148044931778066
 MonoBehaviour:
   m_ObjectHideFlags: 0

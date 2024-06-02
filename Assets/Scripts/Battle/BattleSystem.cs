@@ -6,10 +6,12 @@ using UnityEngine.UI;
 
 // BattleStates define the state of the battle
 public enum BattleState { START, PLAYERTURN, ENEMYTURN, WON, LOST }
+public enum AttackType { MISS, WEAK, NORMAL, CRIT, MAGIC }
 
 public class BattleSystem : MonoBehaviour
 {
     private BattleState state;
+    private AttackType attackType;
 
     [Header("GAME OBJECTS")]
     [SerializeField] private GameObject player;
@@ -50,7 +52,6 @@ public class BattleSystem : MonoBehaviour
 
     void PlayerTurn()
     {
-
         dialogueText.text = "Choose an action";
     }
 
@@ -67,10 +68,36 @@ public class BattleSystem : MonoBehaviour
     IEnumerator PlayerAttack()
     {
         // damage the enemy
-        bool isDead = enemyUnit.TakeDamage(playerUnit.Attack());
+        int attack = playerUnit.Attack();
+        bool isDead = false;
 
-        enemyHUD.SetHP(enemyUnit.GetCurrentHP());
-        dialogueText.text = "The attack is successful";
+        if (attack == -1)
+        {
+            dialogueText.text = playerUnit.GetName() + " missed";
+            attackType = AttackType.MISS;
+        }
+        else
+        {
+            if (attack < playerUnit.GetAttack())
+            {
+                dialogueText.text = "It's a weak attack";
+                attackType = AttackType.WEAK;
+            }
+            else if (attack == playerUnit.GetAttack())
+            {
+                dialogueText.text = "It's a normal attack";
+                attackType = AttackType.NORMAL;
+            }
+            else
+            {
+                dialogueText.text = "CRITICAL HIT!";
+                attackType = AttackType.CRIT;
+            }
+
+            isDead = enemyUnit.TakeDamage(attack);
+            enemyHUD.SetHP(enemyUnit.GetCurrentHP());
+        }
+
 
         yield return new WaitForSeconds(1f);
 
@@ -94,13 +121,40 @@ public class BattleSystem : MonoBehaviour
 
         yield return new WaitForSeconds(1f);
 
-        bool isDead = playerUnit.TakeDamage(enemyUnit.Attack());
+        int attack = enemyUnit.Attack();
+        bool isDead = false;
 
-        playerHUD.SetHP(playerUnit.GetCurrentHP());
+        if (attack == -1)
+        {
+            dialogueText.text = enemyUnit.GetName() + " missed";
+            attackType = AttackType.MISS;
+        }
+        else
+        {
+            if (attack < enemyUnit.GetAttack())
+            {
+                dialogueText.text = "It's a weak attack";
+                attackType = AttackType.WEAK;
+            }
+            else if (attack == enemyUnit.GetAttack())
+            {
+                dialogueText.text = "It's a normal attack";
+                attackType = AttackType.NORMAL;
+            }
+            else
+            {
+                dialogueText.text = "CRITICAL HIT!";
+                attackType = AttackType.CRIT;
+            }
+            yield return new WaitForSeconds(1f);
+            isDead = playerUnit.TakeDamage(attack);
+            playerHUD.SetHP(playerUnit.GetCurrentHP());
+        }
 
-        if(isDead)
+        if (isDead)
         {
             state = BattleState.LOST;
+            EndBattle();
         }
         else
         {
@@ -119,5 +173,10 @@ public class BattleSystem : MonoBehaviour
         {
             dialogueText.text = "You lost the battle!";
         }
+    }
+
+    public AttackType GetAttackType()
+    {
+        return attackType;
     }
 }

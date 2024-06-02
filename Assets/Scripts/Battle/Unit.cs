@@ -11,7 +11,7 @@ public class Unit : MonoBehaviour
     [SerializeField] private int speed;
     [SerializeField] private int level;
 
-    private void Start()
+    private void Awake()
     {
         currentHP = maxHP;
     }
@@ -23,7 +23,7 @@ public class Unit : MonoBehaviour
         // Make the attack
         if (random20 <= 3)    // 1-3
         {
-            return 0;
+            return -1;
         }
 
         else if (random20 <= 10)    // 4-10
@@ -73,5 +73,10 @@ public class Unit : MonoBehaviour
     public int GetLevel()
     {
         return level;
+    }
+
+    public int GetAttack()
+    {
+        return attack;
     }
 }
