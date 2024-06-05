@@ -1346,6 +1346,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8066239126098276880}
   - component: {fileID: 6510055143691887704}
+  - component: {fileID: 768286983334638892}
   m_Layer: 5
   m_Name: Party Member (0)
   m_TagString: Untagged
@@ -1383,6 +1384,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8809194273614358821}
   m_CullTransparentMesh: 1
+--- !u!114 &768286983334638892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8809194273614358821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afbd56d8de616204c98611d2fc23407c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nameText: {fileID: 1415461768916241960}
+  levelText: {fileID: 6548343893278759257}
+  hpSlider: {fileID: 4020284150013690329}
 --- !u!1 &9035936383873875722
 GameObject:
   m_ObjectHideFlags: 0
