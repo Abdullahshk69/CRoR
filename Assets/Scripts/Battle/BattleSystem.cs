@@ -1,17 +1,19 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 // BattleStates define the state of the battle
-public enum BattleState { START, PLAYERTURN, ENEMYTURN, WON, LOST }
+public enum BattleState { START, PLAYERTURN, ENEMYTURN, FLEE, WON, LOST }
 public enum AttackType { MISS, WEAK, NORMAL, CRIT, MAGIC }
 
 public class BattleSystem : MonoBehaviour
 {
-    private BattleState BattleState;
+    private BattleState battleState;
     private AttackType attackType;
 
     [Header("GAME OBJECTS")]
@@ -31,19 +33,23 @@ public class BattleSystem : MonoBehaviour
     [SerializeField] GameObject[] playerUI;
     [SerializeField] GameObject[] enemyUI;
     [SerializeField] GameObject UImenu;
+    [SerializeField] GameObject optionsMenu;
 
     BattleHUD[] playerHUD;
     BattleHUD[] enemyHUD;
 
     private void Start()
     {
-        BattleState = BattleState.START;
+        battleState = BattleState.START;
 
         players = GameObject.FindGameObjectsWithTag("Player");
         enemies = GameObject.FindGameObjectsWithTag("Enemy");
 
-        playerTurnCounter = -1;
-        enemyTurnCounter = -1;
+        Debug.Log("Players size: " + players.Length);
+        Debug.Log("Enemies size: " + enemies.Length);
+
+        playerTurnCounter = 0;
+        enemyTurnCounter = 0;
         // place the players and enemies in the scene
         playerUnit = new Unit[players.Length];
         for (int i = 0; i < players.Length; i++)
@@ -60,6 +66,9 @@ public class BattleSystem : MonoBehaviour
         // Add Huds to huds
         playerHUD = new BattleHUD[playerUI.Length];
         enemyHUD = new BattleHUD[enemyUI.Length];
+
+        Debug.Log("Players UI size: " + playerUI.Length);
+        Debug.Log("Enemies UI size: " + enemyUI.Length);
 
         for (int i = 0; i < playerHUD.Length; i++)
         {
@@ -87,6 +96,7 @@ public class BattleSystem : MonoBehaviour
     {
 
         dialogueText.text = "The battle has begun!";
+        optionsMenu.SetActive(false);
 
 
         for (int i = 0; i < playerUnit.Length; i++)
@@ -99,14 +109,12 @@ public class BattleSystem : MonoBehaviour
             enemyHUD[i].SetHUD(enemyUnit[i]);
         }
 
-        foreach (GameObject hud in playerUI)
-        {
-            hud.SetActive(false);
-        }
+        DisablePlayerHUD();
+        SetTurns();
 
         yield return new WaitForSeconds(2f);
 
-        SetTurns();
+        
         TurnSelector();
     }
 
@@ -118,18 +126,34 @@ public class BattleSystem : MonoBehaviour
     {
         // populate the turn array
         turn = new Unit[playerUnit.Length + enemyUnit.Length];
-        for (int i = 0; i < players.Length; i++)
+        int counter = 0;
+        foreach(Unit unit in playerUnit)
         {
+            turn[counter++] = unit;
+        }
 
+        foreach(Unit unit in enemyUnit)
+        {
+            turn[counter++] = unit;
         }
 
         // Reorder the turns in descending order
-        Array.Sort(turn,
-            delegate (Unit x, Unit y) { return y.GetSpeed().CompareTo(x.GetSpeed()); }
-            );
+        UnitSort(turn);
+        UnitSort(playerUnit, playerHUD);
+        UnitSort(enemyUnit, enemyHUD);
 
         // Set the turn index to 0
         turnIndex = 0;
+    }
+
+    void UnitSort(Unit[] units)
+    {
+        Array.Sort(units, new UnitComparer());
+    }
+
+    void UnitSort(Unit[] units, BattleHUD[] huds)
+    {
+        Array.Sort(units, huds, new UnitComparer());
     }
 
     /// <summary>
@@ -141,22 +165,26 @@ public class BattleSystem : MonoBehaviour
     {
         // Check the tag of the object
         // Then call the turn function based on the tag
+        DisablePlayerHUD();
         if (turn[turnIndex].tag == "Player")
         {
-            BattleState = BattleState.PLAYERTURN;
-            playerTurnCounter++;
-            playerUI[playerTurnCounter].gameObject.SetActive(true);
+            battleState = BattleState.PLAYERTURN;
+            playerHUD[playerTurnCounter].gameObject.SetActive(true);
             UImenu.SetActive(true);
+            optionsMenu.SetActive(true);
             PlayerTurn();
         }
 
         else if (turn[turnIndex].tag == "Enemy")
         {
-            BattleState = BattleState.ENEMYTURN;
-            enemyTurnCounter++;
+            battleState = BattleState.ENEMYTURN;
             StartCoroutine(EnemyTurn());
+            enemyTurnCounter++;
         }
+    }
 
+    void NextTurn()
+    {
         // Update the turn Index
         turnIndex++;
         if (turnIndex == turn.Length)
@@ -164,15 +192,17 @@ public class BattleSystem : MonoBehaviour
             turnIndex = 0;
         }
 
-        if (playerTurnCounter == players.Length - 1)
+        if (playerTurnCounter == players.Length)
         {
-            playerTurnCounter = -1;
+            playerTurnCounter = 0;
         }
 
-        if (enemyTurnCounter == enemies.Length - 1)
+        if (enemyTurnCounter == enemies.Length)
         {
-            enemyTurnCounter = -1;
+            enemyTurnCounter = 0;
         }
+
+        TurnSelector();
     }
 
     /// <summary>
@@ -189,7 +219,7 @@ public class BattleSystem : MonoBehaviour
     /// </summary>
     public void OnAttackButton()
     {
-        if (BattleState != BattleState.PLAYERTURN)
+        if (battleState != BattleState.PLAYERTURN)
         {
             return;
         }
@@ -206,29 +236,29 @@ public class BattleSystem : MonoBehaviour
     IEnumerator PlayerAttack()
     {
         // damage the enemy
-        int attack = playerUnit[playerTurnCounter].Attack();
+        int attack = turn[turnIndex].Attack();
         bool isDead = false;
 
         if (attack == -1)
         {
-            dialogueText.text = playerUnit[playerTurnCounter].GetName() + " missed";
+            dialogueText.text = turn[turnIndex].GetName() + " missed";
             attackType = AttackType.MISS;
         }
         else
         {
-            if (attack < playerUnit[playerTurnCounter].GetAttack())
+            if (attack < turn[turnIndex].GetAttack())
             {
-                dialogueText.text = "It's a weak attack";
+                dialogueText.text = turn[turnIndex].GetName() + " It's a weak attack";
                 attackType = AttackType.WEAK;
             }
-            else if (attack == playerUnit[playerTurnCounter].GetAttack())
+            else if (attack == turn[turnIndex].GetAttack())
             {
-                dialogueText.text = "It's a normal attack";
+                dialogueText.text = turn[turnIndex].GetName() + " It's a normal attack";
                 attackType = AttackType.NORMAL;
             }
             else
             {
-                dialogueText.text = "CRITICAL HIT!";
+                dialogueText.text = turn[turnIndex].GetName() + " CRITICAL HIT!";
                 attackType = AttackType.CRIT;
             }
 
@@ -239,18 +269,18 @@ public class BattleSystem : MonoBehaviour
 
 
         yield return new WaitForSeconds(1f);
-
-        playerUI[playerTurnCounter].gameObject.SetActive(false);
+        playerHUD[playerTurnCounter].gameObject.SetActive(false);
+        playerTurnCounter++;
+               
 
         if (isDead)
         {
-            BattleState = BattleState.WON;
+            battleState = BattleState.WON;
             EndBattle();
         }
         else
         {
-            BattleState = BattleState.ENEMYTURN;
-            TurnSelector();
+            NextTurn();
         }
         // Check if the enemy is dead
         // Change state based on what happened
@@ -266,31 +296,31 @@ public class BattleSystem : MonoBehaviour
         // Show all players
         // Hide the menu
         UImenu.SetActive(false);
-        foreach (GameObject UI in playerUI)
+        foreach (BattleHUD hud in playerHUD)
         {
-            UI.SetActive(true);
+            hud.gameObject.SetActive(true);
         }
 
-        dialogueText.text = enemyUnit[enemyTurnCounter].GetName() + " attacks";
+        //dialogueText.text = turn[turnIndex].GetName() + " attacks";
 
-        yield return new WaitForSeconds(1f);
+        //yield return new WaitForSeconds(1f);
 
-        int attack = enemyUnit[enemyTurnCounter].Attack();
+        int attack = turn[turnIndex].Attack();
         bool isDead = false;
 
         if (attack == -1)
         {
-            dialogueText.text = enemyUnit[enemyTurnCounter].GetName() + " missed";
+            dialogueText.text = turn[turnIndex].GetName() + " missed";
             attackType = AttackType.MISS;
         }
         else
         {
-            if (attack < enemyUnit[enemyTurnCounter].GetAttack())
+            if (attack < turn[turnIndex].GetAttack())
             {
                 dialogueText.text = "It's a weak attack";
                 attackType = AttackType.WEAK;
             }
-            else if (attack == enemyUnit[enemyTurnCounter].GetAttack())
+            else if (attack == turn[turnIndex].GetAttack())
             {
                 dialogueText.text = "It's a normal attack";
                 attackType = AttackType.NORMAL;
@@ -300,22 +330,22 @@ public class BattleSystem : MonoBehaviour
                 dialogueText.text = "CRITICAL HIT!";
                 attackType = AttackType.CRIT;
             }
-            yield return new WaitForSeconds(1f);
-
+            
             int rand = UnityEngine.Random.Range(0, players.Length);
             isDead = playerUnit[rand].TakeDamage(attack);
             playerHUD[rand].SetHP(playerUnit[rand].GetCurrentHP());
+
+            yield return new WaitForSeconds(1f);
         }
 
         if (isDead)
         {
-            BattleState = BattleState.LOST;
+            battleState = BattleState.LOST;
             EndBattle();
         }
         else
         {
-            BattleState = BattleState.PLAYERTURN;
-            TurnSelector();
+            NextTurn();
         }
     }
 
@@ -324,13 +354,15 @@ public class BattleSystem : MonoBehaviour
     /// </summary>
     void EndBattle()
     {
-        if (BattleState == BattleState.WON)
+        UImenu.SetActive(true);
+        optionsMenu.SetActive(false);
+        if (battleState == BattleState.WON)
         {
             dialogueText.text = "You won the battle!";
 
             // Add coroutine to show xp and stuff
         }
-        else if (BattleState == BattleState.LOST)
+        else if (battleState == BattleState.LOST)
         {
             dialogueText.text = "You lost the battle!";
         }
@@ -343,5 +375,43 @@ public class BattleSystem : MonoBehaviour
     public AttackType GetAttackType()
     {
         return attackType;
+    }
+
+    public void OnFleeButton()
+    {
+        if (battleState != BattleState.PLAYERTURN)
+        {
+            return;
+        }
+
+        StartCoroutine(Flee());
+    }
+
+    IEnumerator Flee()
+    {
+        int rand = UnityEngine.Random.Range(0, 100);
+        Debug.Log("Random: " + rand);
+        if (rand >= 50)
+        {
+            battleState = BattleState.FLEE;
+            dialogueText.text = "Flee Successful!";
+            yield return new WaitForSeconds(1f);
+            EndBattle();
+        }
+
+        else
+        {
+            dialogueText.text = "Flee Unsuccessful!";
+            yield return new WaitForSeconds(1f);
+            NextTurn();
+        }
+    }
+
+    void DisablePlayerHUD()
+    {
+        foreach (GameObject hud in playerUI)
+        {
+            hud.SetActive(false);
+        }
     }
 }
