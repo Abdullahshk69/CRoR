@@ -5,7 +5,16 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 2cda990e2423bbf4892e6590ba056729
+    path: Assets/Scenes/World/Top Floor/TopFloor -Throne Room.unity
+    guid: dc68a2769c2dab648a9e6d76ec575388
+  - enabled: 1
+    path: Assets/Scenes/World/Top Floor/TopFloor - Hallway.unity
+    guid: a413ece4afc739e429e96d1b3b37292a
+  - enabled: 1
+    path: Assets/Scenes/World/Top Floor/TopFloor - Stairs.unity
+    guid: 176f7628c0d8e0743bb96b1378cafe5a
   m_configObjects: {}
