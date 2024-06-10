@@ -268,11 +268,13 @@ public class BattleSystem : MonoBehaviour
         // damage the enemy
         int attack = turn[turnIndex].Attack();
         bool isDead = false;
-
+        int rand = 0;
         if (attack == -1)
         {
             dialogueText.text = turn[turnIndex].GetName() + " missed";
             attackType = AttackType.MISS;
+            yield return new WaitForSeconds(1f);
+            NextTurn();
         }
         else
         {
@@ -292,7 +294,6 @@ public class BattleSystem : MonoBehaviour
                 attackType = AttackType.CRIT;
             }
 
-            int rand = 0;
             do
             {
                 rand = UnityEngine.Random.Range(0, enemyUnit.Length);
@@ -301,38 +302,42 @@ public class BattleSystem : MonoBehaviour
 
             isDead = enemyUnit[rand].TakeDamage(attack);
             enemyHUD[rand].SetHP(enemyUnit[rand].GetCurrentHP());
-        }
 
-        yield return new WaitForSeconds(1f);
-        playerHUD[playerTurnCounter].gameObject.SetActive(false);
+            yield return new WaitForSeconds(1f);
+            playerHUD[playerTurnCounter].gameObject.SetActive(false);
 
-        if (isDead)
-        {
-            // Check if all enemies are dead
-            bool allEnemiesDead = true;
-            foreach (Unit enemy in enemyUnit)
+            if (isDead)
             {
-                if (!enemy.IsDead())
+                // Disable the deceased enemy and its UI
+                enemyUnit[rand].gameObject.SetActive(false);
+                enemyHUD[rand].gameObject.SetActive(false);
+
+                // Check if all enemies are dead
+                bool allEnemiesDead = true;
+                foreach (Unit enemy in enemyUnit)
                 {
-                    allEnemiesDead = false;
-                    break;
+                    if (!enemy.IsDead())
+                    {
+                        allEnemiesDead = false;
+                        break;
+                    }
                 }
-            }
-            if (allEnemiesDead)
-            {
-                battleState = BattleState.WON;
-                EndBattle();
+                if (allEnemiesDead)
+                {
+                    battleState = BattleState.WON;
+                    EndBattle();
+                }
+                else
+                {
+                    Debug.Log("Next Turn from player at index" + turnIndex);
+                    NextTurn();
+                }
             }
             else
             {
                 Debug.Log("Next Turn from player at index" + turnIndex);
                 NextTurn();
             }
-        }
-        else
-        {
-            Debug.Log("Next Turn from player at index" + turnIndex);
-            NextTurn();
         }
     }
 
@@ -355,11 +360,14 @@ public class BattleSystem : MonoBehaviour
 
         int attack = turn[turnIndex].Attack();
         bool isDead = false;
+        int rand = 0;
 
         if (attack == -1)
         {
             dialogueText.text = turn[turnIndex].GetName() + " missed";
             attackType = AttackType.MISS;
+            yield return new WaitForSeconds(1f);
+            NextTurn();
         }
         else
         {
@@ -377,9 +385,7 @@ public class BattleSystem : MonoBehaviour
             {
                 dialogueText.text = "CRITICAL HIT!";
                 attackType = AttackType.CRIT;
-            }
-
-            int rand = 0;
+            }            
 
             do
             {
