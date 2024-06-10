@@ -45,11 +45,12 @@ public class BattleSystem : MonoBehaviour
         players = GameObject.FindGameObjectsWithTag("Player");
         enemies = GameObject.FindGameObjectsWithTag("Enemy");
 
-        Debug.Log("Players size: " + players.Length);
-        Debug.Log("Enemies size: " + enemies.Length);
+        //Debug.Log("Players size: " + players.Length);
+        //Debug.Log("Enemies size: " + enemies.Length);
 
-        playerTurnCounter = 0;
-        enemyTurnCounter = 0;
+        playerTurnCounter = -1;
+        enemyTurnCounter = -1;
+
         // place the players and enemies in the scene
         playerUnit = new Unit[players.Length];
         for (int i = 0; i < players.Length; i++)
@@ -67,8 +68,8 @@ public class BattleSystem : MonoBehaviour
         playerHUD = new BattleHUD[playerUI.Length];
         enemyHUD = new BattleHUD[enemyUI.Length];
 
-        Debug.Log("Players UI size: " + playerUI.Length);
-        Debug.Log("Enemies UI size: " + enemyUI.Length);
+        //Debug.Log("Players UI size: " + playerUI.Length);
+        //Debug.Log("Enemies UI size: " + enemyUI.Length);
 
         for (int i = 0; i < playerHUD.Length; i++)
         {
@@ -114,7 +115,6 @@ public class BattleSystem : MonoBehaviour
 
         yield return new WaitForSeconds(2f);
 
-        
         TurnSelector();
     }
 
@@ -127,12 +127,12 @@ public class BattleSystem : MonoBehaviour
         // populate the turn array
         turn = new Unit[playerUnit.Length + enemyUnit.Length];
         int counter = 0;
-        foreach(Unit unit in playerUnit)
+        foreach (Unit unit in playerUnit)
         {
             turn[counter++] = unit;
         }
 
-        foreach(Unit unit in enemyUnit)
+        foreach (Unit unit in enemyUnit)
         {
             turn[counter++] = unit;
         }
@@ -163,23 +163,45 @@ public class BattleSystem : MonoBehaviour
     /// </summary>
     void TurnSelector()
     {
+        Debug.Log("Turn selector called. Tag == " + turn[turnIndex].tag);
         // Check the tag of the object
         // Then call the turn function based on the tag
         DisablePlayerHUD();
         if (turn[turnIndex].tag == "Player")
         {
-            battleState = BattleState.PLAYERTURN;
-            playerHUD[playerTurnCounter].gameObject.SetActive(true);
-            UImenu.SetActive(true);
-            optionsMenu.SetActive(true);
-            PlayerTurn();
+            playerTurnCounter++;
+            // check if the player is alive
+            if (turn[turnIndex].IsDead())
+            {
+                NextTurn();
+            }
+
+            else
+            {
+                battleState = BattleState.PLAYERTURN;
+                playerHUD[playerTurnCounter].gameObject.SetActive(true);
+                UImenu.SetActive(true);
+                optionsMenu.SetActive(true);
+                PlayerTurn();
+            }
         }
 
         else if (turn[turnIndex].tag == "Enemy")
         {
-            battleState = BattleState.ENEMYTURN;
-            StartCoroutine(EnemyTurn());
+            Debug.Log("Entered Enemy");
             enemyTurnCounter++;
+            // Check if the enemy is alive
+            if (turn[turnIndex].IsDead())
+            {
+                NextTurn();
+            }
+
+            else
+            {
+                Debug.Log("Changed state to enemy");
+                battleState = BattleState.ENEMYTURN;
+                StartCoroutine(EnemyTurn());
+            }
         }
     }
 
@@ -192,14 +214,14 @@ public class BattleSystem : MonoBehaviour
             turnIndex = 0;
         }
 
-        if (playerTurnCounter == players.Length)
+        if (playerTurnCounter == players.Length - 1)
         {
-            playerTurnCounter = 0;
+            playerTurnCounter = -1;
         }
 
-        if (enemyTurnCounter == enemies.Length)
+        if (enemyTurnCounter == enemies.Length - 1)
         {
-            enemyTurnCounter = 0;
+            enemyTurnCounter = -1;
         }
 
         TurnSelector();
@@ -262,7 +284,13 @@ public class BattleSystem : MonoBehaviour
                 attackType = AttackType.CRIT;
             }
 
-            int rand = UnityEngine.Random.Range(0, enemyUnit.Length);
+            int rand = 0;
+            do
+            {
+                rand= UnityEngine.Random.Range(0, enemyUnit.Length);
+            } while (enemyUnit[rand].IsDead());
+
+            
             isDead = enemyUnit[rand].TakeDamage(attack);
             enemyHUD[rand].SetHP(enemyUnit[rand].GetCurrentHP());
         }
@@ -270,13 +298,29 @@ public class BattleSystem : MonoBehaviour
 
         yield return new WaitForSeconds(1f);
         playerHUD[playerTurnCounter].gameObject.SetActive(false);
-        playerTurnCounter++;
-               
+
 
         if (isDead)
         {
-            battleState = BattleState.WON;
-            EndBattle();
+            // Check if all enemies are dead
+            bool allEnemiesDead = true;
+            foreach (Unit enemy in enemyUnit)
+            {
+                if (!enemy.IsDead())
+                {
+                    allEnemiesDead = false;
+                    break;
+                }
+            }
+            if (allEnemiesDead)
+            {
+                battleState = BattleState.WON;
+                EndBattle();
+            }
+            else
+            {
+                NextTurn();
+            }
         }
         else
         {
@@ -293,13 +337,11 @@ public class BattleSystem : MonoBehaviour
     /// <returns>Waits for 1 second</returns>
     IEnumerator EnemyTurn()
     {
+        Debug.Log("Enemy Turn is called");
         // Show all players
         // Hide the menu
         UImenu.SetActive(false);
-        foreach (BattleHUD hud in playerHUD)
-        {
-            hud.gameObject.SetActive(true);
-        }
+        EnablePlayerHUD();
 
         //dialogueText.text = turn[turnIndex].GetName() + " attacks";
 
@@ -330,22 +372,30 @@ public class BattleSystem : MonoBehaviour
                 dialogueText.text = "CRITICAL HIT!";
                 attackType = AttackType.CRIT;
             }
-            
-            int rand = UnityEngine.Random.Range(0, players.Length);
+
+            int rand = 0;
+
+            do
+            {
+                rand = UnityEngine.Random.Range(0, players.Length);
+                Debug.Log("Random: " + rand);
+            } while (playerUnit[rand].IsDead());
+
             isDead = playerUnit[rand].TakeDamage(attack);
             playerHUD[rand].SetHP(playerUnit[rand].GetCurrentHP());
 
-            yield return new WaitForSeconds(1f);
-        }
+            yield return new WaitForSeconds(2f);
 
-        if (isDead)
-        {
-            battleState = BattleState.LOST;
-            EndBattle();
-        }
-        else
-        {
-            NextTurn();
+            // Check if king is dead
+            if (isDead && playerUnit[rand].GetName() == "King")
+            {
+                battleState = BattleState.LOST;
+                EndBattle();
+            }
+            else
+            {
+                NextTurn();
+            }
         }
     }
 
@@ -412,6 +462,17 @@ public class BattleSystem : MonoBehaviour
         foreach (GameObject hud in playerUI)
         {
             hud.SetActive(false);
+        }
+    }
+
+    void EnablePlayerHUD()
+    {
+        for (int i = 0; i < playerUnit.Length; i++)
+        {
+            if (!playerUnit[i].IsDead())
+            {
+                playerHUD[i].gameObject.SetActive(true);
+            }
         }
     }
 }

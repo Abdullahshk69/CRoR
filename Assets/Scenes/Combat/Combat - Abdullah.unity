@@ -840,7 +840,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitName: Bryce
-  maxHP: 100
+  maxHP: 0
   attack: 20
   speed: 1
   level: 1
@@ -1515,9 +1515,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c25632f07dc00b43bc1eee163a78c88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unitName: Emi
+  unitName: King
   maxHP: 100
-  attack: 10
+  attack: 20
   speed: 10
   level: 1
 --- !u!1001 &695196688
@@ -2511,6 +2511,14 @@ PrefabInstance:
       propertyPath: m_text
       value: FLEE
       objectReference: {fileID: 0}
+    - target: {fileID: 3151121965945290890, guid: 2addc0efdd41e4c47849ffc34daef2d7, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 96194327}
+    - target: {fileID: 3151121965945290890, guid: 2addc0efdd41e4c47849ffc34daef2d7, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnFleeButton
+      objectReference: {fileID: 0}
     - target: {fileID: 8709601439260358034, guid: 2addc0efdd41e4c47849ffc34daef2d7, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -2647,8 +2655,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitName: N
-  maxHP: 100
-  attack: 10
+  maxHP: 0
+  attack: 50
   speed: 3
   level: 1
 --- !u!1001 &1103675359
@@ -3532,7 +3540,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitName: Abdul
   maxHP: 100
-  attack: 10
+  attack: 50
   speed: 5
   level: 1
 --- !u!4 &1589740411
@@ -4632,6 +4640,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 280065521}
     m_Modifications:
+    - target: {fileID: 2021227201654837024, guid: 7591fd01a60f6684fbd7bb5309f23b2d, type: 3}
+      propertyPath: maxHP
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3023384328245006056, guid: 7591fd01a60f6684fbd7bb5309f23b2d, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
