@@ -4642,7 +4642,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2021227201654837024, guid: 7591fd01a60f6684fbd7bb5309f23b2d, type: 3}
       propertyPath: maxHP
-      value: 0
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 3023384328245006056, guid: 7591fd01a60f6684fbd7bb5309f23b2d, type: 3}
       propertyPath: m_Pivot.x
