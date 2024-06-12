@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,6 +14,8 @@ public enum AttackType { MISS, WEAK, NORMAL, CRIT, MAGIC }
 
 public class BattleSystem : MonoBehaviour
 {
+    public static BattleSystem instance;
+
     private BattleState battleState;
     private AttackType attackType;
 
@@ -40,6 +43,11 @@ public class BattleSystem : MonoBehaviour
 
     private void Start()
     {
+        if(instance == null)
+        {
+            instance = this;
+        }
+
         battleState = BattleState.START;
 
         players = GameObject.FindGameObjectsWithTag("Player");
@@ -254,7 +262,17 @@ public class BattleSystem : MonoBehaviour
             return;
         }
 
-        StartCoroutine(PlayerAttack());
+        // Enable enemy Click Components
+        //StartCoroutine(PlayerAttack());
+    }
+
+    public void SelectEnemy(Unit unit)
+    {
+        Debug.Log("Enemy: " + unit.name);
+        if(unit.isActiveAndEnabled)
+        {
+            StartCoroutine(PlayerAttack(unit));
+        }
     }
 
     /// <summary>
@@ -263,7 +281,7 @@ public class BattleSystem : MonoBehaviour
     /// In the future, we will provide the option to select the enemy to attack.
     /// </summary>
     /// <returns>Waits for 1 second</returns>
-    IEnumerator PlayerAttack()
+    IEnumerator PlayerAttack(Unit unit)
     {
         // damage the enemy
         int attack = turn[turnIndex].Attack();
@@ -300,7 +318,15 @@ public class BattleSystem : MonoBehaviour
             } while (enemyUnit[rand].IsDead());
 
 
-            isDead = enemyUnit[rand].TakeDamage(attack);
+            isDead = unit.TakeDamage(attack);
+            for(int i=0;i<enemyUnit.Length;i++)
+            {
+                if (enemyUnit[i].name == unit.name)
+                {
+                    rand = i;
+                    break;
+                }
+            }
             enemyHUD[rand].SetHP(enemyUnit[rand].GetCurrentHP());
 
             yield return new WaitForSeconds(1f);
