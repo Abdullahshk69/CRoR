@@ -60,7 +60,7 @@ public class Unit : MonoBehaviour
     {
         currentHP -= damage;
 
-        return currentHP <= 0;
+        return IsDead();
     }
 
     /// <summary>
@@ -102,5 +102,10 @@ public class Unit : MonoBehaviour
     public int GetSpeed()
     {
         return speed;
+    }
+
+    public bool IsDead()
+    {
+        return currentHP <= 0;
     }
 }
