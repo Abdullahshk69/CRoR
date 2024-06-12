@@ -347,8 +347,11 @@ public class BattleSystem : MonoBehaviour
             if (isDead)
             {
                 // Disable the deceased enemy and its UI
-                enemyUnit[rand].gameObject.SetActive(false);
-                enemyHUD[rand].gameObject.SetActive(false);
+                DisableObject(enemyUnit[rand].gameObject);
+                //enemyUnit[rand].gameObject.SetActive(false);
+
+                DisableObject(enemyHUD[rand].gameObject);
+                //enemyHUD[rand].gameObject.SetActive(false);
 
                 // Check if all enemies are dead
                 bool allEnemiesDead = true;
@@ -528,4 +531,10 @@ public class BattleSystem : MonoBehaviour
             }
         }
     }
+
+    void DisableObject(GameObject gameObject)
+    {
+        gameObject.SetActive(false);
+    }
+
 }
