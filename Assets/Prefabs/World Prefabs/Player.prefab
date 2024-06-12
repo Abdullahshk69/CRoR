@@ -101,6 +101,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Speed: 8
+  anim: {fileID: 3150006086495338009}
 --- !u!61 &3489113901977205640
 BoxCollider2D:
   m_ObjectHideFlags: 0
