@@ -364,7 +364,7 @@ public class BattleSystem : MonoBehaviour
 
         if (attack == -1)
         {
-            dialogueText.text = turn[turnIndex].GetName() + " missed";
+            //dialogueText.text = turn[turnIndex].GetName() + " missed";
             attackType = AttackType.MISS;
             yield return new WaitForSeconds(1f);
             NextTurn();
@@ -373,17 +373,17 @@ public class BattleSystem : MonoBehaviour
         {
             if (attack < turn[turnIndex].GetAttack())
             {
-                dialogueText.text = "It's a weak attack";
+                //dialogueText.text = "It's a weak attack";
                 attackType = AttackType.WEAK;
             }
             else if (attack == turn[turnIndex].GetAttack())
             {
-                dialogueText.text = "It's a normal attack";
+                //dialogueText.text = "It's a normal attack";
                 attackType = AttackType.NORMAL;
             }
             else
             {
-                dialogueText.text = "CRITICAL HIT!";
+                //dialogueText.text = "CRITICAL HIT!";
                 attackType = AttackType.CRIT;
             }            
 
