@@ -43,7 +43,7 @@ public class BattleSystem : MonoBehaviour
 
     private void Start()
     {
-        if(instance == null)
+        if (instance == null)
         {
             instance = this;
         }
@@ -52,6 +52,8 @@ public class BattleSystem : MonoBehaviour
 
         players = GameObject.FindGameObjectsWithTag("Player");
         enemies = GameObject.FindGameObjectsWithTag("Enemy");
+
+        SetEnemyScriptActive(false);
 
         //Debug.Log("Players size: " + players.Length);
         //Debug.Log("Enemies size: " + enemies.Length);
@@ -262,14 +264,27 @@ public class BattleSystem : MonoBehaviour
             return;
         }
 
+        SetEnemyScriptActive(true);
+        optionsMenu.SetActive(false);
         // Enable enemy Click Components
         //StartCoroutine(PlayerAttack());
+    }
+
+    void SetEnemyScriptActive(bool active)
+    {
+        foreach (GameObject enemy in enemies)
+        {
+            if (true)
+            {
+                enemy.GetComponent<ClickEnemy>().enabled = active;
+            }
+        }
     }
 
     public void SelectEnemy(Unit unit)
     {
         Debug.Log("Enemy: " + unit.name);
-        if(unit.isActiveAndEnabled)
+        if (unit.isActiveAndEnabled)
         {
             StartCoroutine(PlayerAttack(unit));
         }
@@ -283,6 +298,7 @@ public class BattleSystem : MonoBehaviour
     /// <returns>Waits for 1 second</returns>
     IEnumerator PlayerAttack(Unit unit)
     {
+        SetEnemyScriptActive(false);
         // damage the enemy
         int attack = turn[turnIndex].Attack();
         bool isDead = false;
@@ -319,7 +335,7 @@ public class BattleSystem : MonoBehaviour
 
 
             isDead = unit.TakeDamage(attack);
-            for(int i=0;i<enemyUnit.Length;i++)
+            for (int i = 0; i < enemyUnit.Length; i++)
             {
                 if (enemyUnit[i].name == unit.name)
                 {
@@ -411,7 +427,7 @@ public class BattleSystem : MonoBehaviour
             {
                 //dialogueText.text = "CRITICAL HIT!";
                 attackType = AttackType.CRIT;
-            }            
+            }
 
             do
             {
