@@ -25,6 +25,15 @@ public class SceneController : MonoBehaviour
         }
     }
 
+    public string getScene()
+    { 
+        return scene;
+    }
+    public void updateScene()
+    {
+        scene = SceneManager.GetActiveScene().name;
+    }
+
     public void ToHallway()
     {
         nextScene = "TopFloor - Hallway";
@@ -46,10 +55,6 @@ public class SceneController : MonoBehaviour
         transitionAnimation.SetTrigger("End");
         yield return new WaitForSeconds(1);
         SceneManager.LoadScene(nextScene);
-        SpawnComponent spawnComponent = GameObject.Find("Spawns").GetComponent<SpawnComponent>();
-        PlayerController playerController = GameObject.Find("Player").GetComponent<PlayerController>();
-        //playerController.moveToSpawn(spawnComponent.getSpawn(scene));
-        scene = SceneManager.GetActiveScene().name;
         transitionAnimation.SetTrigger("Start");
     }
 }

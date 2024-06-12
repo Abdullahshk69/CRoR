@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
+    public static PlayerController instance;
     [SerializeField] private float Speed;
     [SerializeField] private SpawnComponent spawnComponent;
     private float speedX, speedY;
@@ -11,6 +13,11 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        if (instance == null)
+        {
+            instance = this;
+        }
+
         rb = GetComponent<Rigidbody2D>();
     }
 
@@ -27,6 +34,7 @@ public class PlayerController : MonoBehaviour
 
     public void moveToSpawn(GameObject spawn)
     {
+        Debug.Log(spawn.name);
         transform.position = spawn.transform.position;
     }
 }
