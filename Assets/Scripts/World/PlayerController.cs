@@ -7,7 +7,6 @@ public class PlayerController : MonoBehaviour
 {
     public static PlayerController instance;
     [SerializeField] private float Speed;
-    [SerializeField] private SpawnComponent spawnComponent;
     private float speedX, speedY;
     private Rigidbody2D rb;
 
