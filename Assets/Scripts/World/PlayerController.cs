@@ -33,7 +33,6 @@ public class PlayerController : MonoBehaviour
 
     public void moveToSpawn(GameObject spawn)
     {
-        Debug.Log(spawn.name);
         transform.position = spawn.transform.position;
     }
 }

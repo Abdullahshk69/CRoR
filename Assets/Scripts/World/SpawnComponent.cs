@@ -14,7 +14,6 @@ public class SpawnComponent : MonoBehaviour
         for (int i = 0; i < spawns.Length; i++)
         {
             spawns[i] = transform.GetChild(i).gameObject;
-            Debug.Log(spawns[i].name);
         }
 
         string prevScene = SceneController.instance.getScene();
@@ -22,7 +21,6 @@ public class SpawnComponent : MonoBehaviour
         {
             if (spawn.name == prevScene)
             {
-                Debug.Log(spawn.name);
                 PlayerController.instance.moveToSpawn(spawn);
             }
         }
