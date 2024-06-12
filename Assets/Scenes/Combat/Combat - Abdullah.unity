@@ -1758,6 +1758,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Option (Defend)
       objectReference: {fileID: 0}
+    - target: {fileID: 976032263710038774, guid: 2addc0efdd41e4c47849ffc34daef2d7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2265970172718548687, guid: 2addc0efdd41e4c47849ffc34daef2d7, type: 3}
       propertyPath: m_text
       value: DEFEND
@@ -1780,7 +1784,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8709601439260358034, guid: 2addc0efdd41e4c47849ffc34daef2d7, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8709601439260358034, guid: 2addc0efdd41e4c47849ffc34daef2d7, type: 3}
       propertyPath: m_AnchorMin.x
@@ -1788,7 +1792,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8709601439260358034, guid: 2addc0efdd41e4c47849ffc34daef2d7, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8709601439260358034, guid: 2addc0efdd41e4c47849ffc34daef2d7, type: 3}
       propertyPath: m_SizeDelta.x
@@ -1828,11 +1832,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8709601439260358034, guid: 2addc0efdd41e4c47849ffc34daef2d7, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 140
       objectReference: {fileID: 0}
     - target: {fileID: 8709601439260358034, guid: 2addc0efdd41e4c47849ffc34daef2d7, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -85
       objectReference: {fileID: 0}
     - target: {fileID: 8709601439260358034, guid: 2addc0efdd41e4c47849ffc34daef2d7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -4610,7 +4614,7 @@ MonoBehaviour:
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
-  m_ChildAlignment: 1
+  m_ChildAlignment: 0
   m_Spacing: 16
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
