@@ -109,7 +109,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 17
-        y: 80
+        y: 208
         width: 31
         height: 37
       alignment: 0
@@ -130,7 +130,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 81
-        y: 78
+        y: 206
         width: 31
         height: 38
       alignment: 0
@@ -151,7 +151,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 145
-        y: 80
+        y: 208
         width: 31
         height: 37
       alignment: 0
@@ -172,9 +172,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 17
-        y: 16
+        y: 142
         width: 31
-        height: 37
+        height: 38
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -193,9 +193,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 81
-        y: 14
+        y: 142
         width: 31
-        height: 38
+        height: 37
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -213,8 +213,8 @@ TextureImporter:
       name: In World KING_5
       rect:
         serializedVersion: 2
-        x: 145
-        y: 16
+        x: 17
+        y: 80
         width: 31
         height: 37
       alignment: 0
@@ -226,6 +226,90 @@ TextureImporter:
       bones: []
       spriteID: 02ce52430d6d3e24689e0ad278859c69
       internalID: -1799599047
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: In World KING_6
+      rect:
+        serializedVersion: 2
+        x: 81
+        y: 78
+        width: 31
+        height: 38
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1a03a0c1b129d464db52c0aaa18e64b0
+      internalID: -737804483
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: In World KING_7
+      rect:
+        serializedVersion: 2
+        x: 145
+        y: 80
+        width: 31
+        height: 37
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2239b00dcfe336143b0509df761de01f
+      internalID: -949848322
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: In World KING_8
+      rect:
+        serializedVersion: 2
+        x: 17
+        y: 14
+        width: 31
+        height: 38
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3714279dd2d782541a387e41116468f3
+      internalID: -160538138
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: In World KING_9
+      rect:
+        serializedVersion: 2
+        x: 81
+        y: 14
+        width: 31
+        height: 37
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9ca3b1503d0506e4bb157de5e6a5e19a
+      internalID: -1384150145
       vertices: []
       indices: 
       edges: []
@@ -242,9 +326,13 @@ TextureImporter:
     secondaryTextures: []
     nameFileIdTable:
       In World KING_5: -1799599047
+      In World KING_8: -160538138
+      In World KING_6: -737804483
+      In World KING_9: -1384150145
       In World KING_3: 1611505899
       In World KING_2: 2012004012
       In World KING_0: 734453696
+      In World KING_7: -949848322
       In World KING_1: -303161522
       In World KING_4: -741697880
   spritePackingTag: 
