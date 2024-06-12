@@ -7,6 +7,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.XR;
 
 // BattleStates define the state of the battle
 public enum BattleState { START, PLAYERTURN, ENEMYTURN, FLEE, WON, LOST }
@@ -298,7 +299,7 @@ public class BattleSystem : MonoBehaviour
         // damage the enemy
         int attack = turn[turnIndex].Attack();
         bool isDead = false;
-        int rand = 0;
+        int selectedEnemyIndex = 0;
         if (attack == -1)
         {
             dialogueText.text = turn[turnIndex].GetName() + " missed";
@@ -324,22 +325,18 @@ public class BattleSystem : MonoBehaviour
                 attackType = AttackType.CRIT;
             }
 
-            do
-            {
-                rand = UnityEngine.Random.Range(0, enemyUnit.Length);
-            } while (enemyUnit[rand].IsDead());
-
-
             isDead = unit.TakeDamage(attack);
             for (int i = 0; i < enemyUnit.Length; i++)
             {
                 if (enemyUnit[i] == unit)
                 {
-                    rand = i;
+                    selectedEnemyIndex = i;
                     break;
                 }
             }
-            enemyHUD[rand].SetHP(enemyUnit[rand].GetCurrentHP());
+            enemyHUD[selectedEnemyIndex].SetHP(enemyUnit[selectedEnemyIndex].GetCurrentHP());
+
+            StartCoroutine(DamageFlash(enemyUnit[selectedEnemyIndex]));
 
             yield return new WaitForSeconds(1f);
             playerHUD[playerTurnCounter].gameObject.SetActive(false);
@@ -347,10 +344,10 @@ public class BattleSystem : MonoBehaviour
             if (isDead)
             {
                 // Disable the deceased enemy and its UI
-                DisableObject(enemyUnit[rand].gameObject);
+                DisableObject(enemyUnit[selectedEnemyIndex].gameObject);
                 //enemyUnit[rand].gameObject.SetActive(false);
 
-                DisableObject(enemyHUD[rand].gameObject);
+                DisableObject(enemyHUD[selectedEnemyIndex].gameObject);
                 //enemyHUD[rand].gameObject.SetActive(false);
 
                 // Check if all enemies are dead
@@ -438,6 +435,8 @@ public class BattleSystem : MonoBehaviour
             Debug.Log("Dealing Damage to player on index: " + rand + "\nPlayer name is " + playerUnit[rand].GetName());
             isDead = playerUnit[rand].TakeDamage(attack);
             playerHUD[rand].SetHP(playerUnit[rand].GetCurrentHP());
+
+            StartCoroutine(DamageFlash(playerUnit[rand]));
 
             yield return new WaitForSeconds(2f);
 
@@ -537,4 +536,14 @@ public class BattleSystem : MonoBehaviour
         gameObject.SetActive(false);
     }
 
+    IEnumerator DamageFlash(Unit unit)
+    {
+        unit.gameObject.GetComponent<SpriteRenderer>().enabled = false;
+        yield return new WaitForSeconds(0.2f);
+        unit.gameObject.GetComponent<SpriteRenderer>().enabled = true;
+        yield return new WaitForSeconds(0.2f);
+        unit.gameObject.GetComponent<SpriteRenderer>().enabled = false;
+        yield return new WaitForSeconds(0.2f);
+        unit.gameObject.GetComponent<SpriteRenderer>().enabled = true;
+    }
 }
