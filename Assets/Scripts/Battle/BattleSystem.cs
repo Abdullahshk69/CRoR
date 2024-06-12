@@ -274,16 +274,12 @@ public class BattleSystem : MonoBehaviour
     {
         foreach (GameObject enemy in enemies)
         {
-            if (true)
-            {
-                enemy.GetComponent<ClickEnemy>().enabled = active;
-            }
+            enemy.GetComponent<ClickEnemy>().enabled = active;
         }
     }
 
     public void SelectEnemy(Unit unit)
     {
-        Debug.Log("Enemy: " + unit.name);
         if (unit.isActiveAndEnabled)
         {
             StartCoroutine(PlayerAttack(unit));
@@ -337,7 +333,7 @@ public class BattleSystem : MonoBehaviour
             isDead = unit.TakeDamage(attack);
             for (int i = 0; i < enemyUnit.Length; i++)
             {
-                if (enemyUnit[i].name == unit.name)
+                if (enemyUnit[i] == unit)
                 {
                     rand = i;
                     break;
