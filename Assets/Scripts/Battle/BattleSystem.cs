@@ -436,7 +436,7 @@ public class BattleSystem : MonoBehaviour
             isDead = playerUnit[rand].TakeDamage(attack);
             playerHUD[rand].SetHP(playerUnit[rand].GetCurrentHP());
 
-            StartCoroutine(DamageFlash(playerUnit[rand]));
+            StartCoroutine(DamageFlash(playerHUD[rand]));
 
             yield return new WaitForSeconds(2f);
 
@@ -545,5 +545,19 @@ public class BattleSystem : MonoBehaviour
         unit.gameObject.GetComponent<SpriteRenderer>().enabled = false;
         yield return new WaitForSeconds(0.2f);
         unit.gameObject.GetComponent<SpriteRenderer>().enabled = true;
+    }
+
+    IEnumerator DamageFlash(BattleHUD hud)
+    {
+        Transform portrait = hud.gameObject.transform.GetChild(0);
+        Transform character = portrait.GetChild(1);
+
+        character.GetComponent<Image>().enabled = false;
+        yield return new WaitForSeconds(0.2f);
+        character.GetComponent<Image>().enabled = true;
+        yield return new WaitForSeconds(0.2f);
+        character.GetComponent<Image>().enabled = false;
+        yield return new WaitForSeconds(0.2f);
+        character.GetComponent<Image>().enabled = true;
     }
 }
