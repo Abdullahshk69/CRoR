@@ -9,6 +9,10 @@ public class BattleHUD : MonoBehaviour
     [SerializeField] private TextMeshProUGUI nameText;
     [SerializeField] private TextMeshProUGUI levelText;
     [SerializeField] private Slider hpSlider;
+    [SerializeField] private float lerpSpeed = 0.1f;
+
+    private float time;
+    public int currentHealth;
 
     /// <summary>
     /// Sets the Hud for a particular Unit
@@ -20,6 +24,7 @@ public class BattleHUD : MonoBehaviour
         levelText.text = "lvl " + unit.GetLevel();
         hpSlider.maxValue = unit.GetMaxHP();
         hpSlider.value = unit.GetCurrentHP();
+        currentHealth = unit.GetCurrentHP();
     }
 
     /// <summary>
@@ -28,6 +33,16 @@ public class BattleHUD : MonoBehaviour
     /// <param name="hp">current hp</param>
     public void SetHP(int hp)
     {
-        hpSlider.value = hp;
+        currentHealth = hp;
+        time = 0;
+    }
+
+    private void Update()
+    {
+        float targetHealth = currentHealth;
+        float startHealth = hpSlider.value;
+        time += Time.deltaTime * lerpSpeed;
+
+        hpSlider.value = Mathf.Lerp(startHealth, targetHealth, time);
     }
 }
