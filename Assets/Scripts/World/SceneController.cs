@@ -62,6 +62,21 @@ public class SceneController : MonoBehaviour
         StartCoroutine(LoadNextScene());
 
     }
+    public void ToCombat()
+    {
+        nextScene = "Combat";
+        StartCoroutine(LoadNextScene());
+    }
+    public void Win()
+    {
+        nextScene = "Win";
+        StartCoroutine(LoadNextScene());
+    }
+     public void Lose()
+    {
+        nextScene = "Lose";
+        StartCoroutine(LoadNextScene());
+    }
 
     IEnumerator LoadNextScene()
     {

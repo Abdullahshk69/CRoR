@@ -56,4 +56,14 @@ public class PlayerController : MonoBehaviour
     {
         transform.position = spawn.transform.position;
     }
+
+    private void CheckEnemyEncounter()
+    {
+        // Check 
+    }
+
+    private void LoadEnemyCombat()
+    {
+        SceneController.instance.ToCombat();
+    }
 }

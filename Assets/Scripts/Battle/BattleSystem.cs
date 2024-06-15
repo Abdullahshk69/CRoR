@@ -466,11 +466,14 @@ public class BattleSystem : MonoBehaviour
         {
             dialogueText.text = "You won the battle!";
 
-            // Add coroutine to show xp and stuff
+            //Win screen
+            SceneController.instance.ToHallway();
         }
         else if (battleState == BattleState.LOST)
         {
             dialogueText.text = "You lost the battle!";
+            // Lose Screen
+            SceneController.instance.Lose();
         }
     }
 
