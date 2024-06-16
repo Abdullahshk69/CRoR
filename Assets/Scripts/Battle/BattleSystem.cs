@@ -21,6 +21,7 @@ public class BattleSystem : MonoBehaviour
     private AttackType attackType;
 
     [Header("GAME OBJECTS")]
+    private GameObject player;
     private GameObject[] players;
     private GameObject[] enemies;
 
@@ -51,8 +52,11 @@ public class BattleSystem : MonoBehaviour
 
         battleState = BattleState.START;
 
-        players = GameObject.FindGameObjectsWithTag("Player");
+        players = GameObject.FindGameObjectsWithTag("PlayerCombat");
         enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        player = GameObject.FindGameObjectWithTag("Player");
+
+        DisablePlayerSpriteAndScript();
 
         SetEnemyScriptActive(false);
 
@@ -179,7 +183,7 @@ public class BattleSystem : MonoBehaviour
         // Check the tag of the object
         // Then call the turn function based on the tag
         DisablePlayerHUD();
-        if (turn[turnIndex].tag == "Player")
+        if (turn[turnIndex].tag == "PlayerCombat")
         {
             Debug.Log("Player's Turn at index == " + turnIndex);
             playerTurnCounter++;
@@ -465,6 +469,7 @@ public class BattleSystem : MonoBehaviour
         if (battleState == BattleState.WON)
         {
             dialogueText.text = "You won the battle!";
+            Invoke(nameof(EnablePlayerSpriteAndScript), 0.9f);
 
             //Win screen
             SceneController.instance.ToHallway();
@@ -474,6 +479,12 @@ public class BattleSystem : MonoBehaviour
             dialogueText.text = "You lost the battle!";
             // Lose Screen
             SceneController.instance.Lose();
+        }
+        else if(battleState == BattleState.FLEE)
+        {
+            dialogueText.text = "You successfully fled the battle!";
+            Invoke(nameof(EnablePlayerSpriteAndScript), 0.9f);
+            SceneController.instance.ToHallway();
         }
     }
 
@@ -562,5 +573,15 @@ public class BattleSystem : MonoBehaviour
         character.GetComponent<Image>().enabled = false;
         yield return new WaitForSeconds(0.2f);
         character.GetComponent<Image>().enabled = true;
+    }
+
+    private void EnablePlayerSpriteAndScript()
+    {
+        player.GetComponent<SpriteRenderer>().enabled = true;
+    }
+
+    private void DisablePlayerSpriteAndScript()
+    {
+        player.GetComponent<SpriteRenderer>().enabled = false;
     }
 }

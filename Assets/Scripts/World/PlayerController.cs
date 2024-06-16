@@ -11,6 +11,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Animator anim;
     private float speedX, speedY;
     private Rigidbody2D rb;
+    bool isCoroutineCheckEnemyRunning = false;
+    bool isInCombat = false;
 
     void Start()
     {
@@ -24,32 +26,49 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        speedX = Input.GetAxisRaw("Horizontal")* Speed;
-        speedY = Input.GetAxisRaw("Vertical") * Speed;
+        if (!isInCombat)
+        {
 
-        //Animator
-        anim.SetInteger("Direction", 0);
-        if (speedY < 0) //Going down
-        {
-            anim.SetInteger("Direction", -1);
-        }
-        else if (speedY > 0) //Going up
-        {
-            anim.SetInteger("Direction", 1);
-        }
-        if (speedX < 0) //Going left TEMP!!
-        {
-            anim.SetInteger("Direction", -1);
-        }
-        else if (speedX > 0) //Going right TEMP!!
-        {
-            anim.SetInteger("Direction", -1);
+
+            speedX = Input.GetAxisRaw("Horizontal") * Speed;
+            speedY = Input.GetAxisRaw("Vertical") * Speed;
+
+            //Animator
+            anim.SetInteger("Direction", 0);
+            if (speedY < 0) //Going down
+            {
+                anim.SetInteger("Direction", -1);
+            }
+            else if (speedY > 0) //Going up
+            {
+                anim.SetInteger("Direction", 1);
+            }
+            if (speedX < 0) //Going left TEMP!!
+            {
+                anim.SetInteger("Direction", -1);
+            }
+            else if (speedX > 0) //Going right TEMP!!
+            {
+                anim.SetInteger("Direction", -1);
+            }
+
+            // moving
+            if (speedX != 0 || speedY != 0)
+            {
+                if (!isCoroutineCheckEnemyRunning)
+                {
+                    StartCoroutine(CheckEnemyEncounter());
+                }
+            }
         }
     }
 
     private void FixedUpdate()
     {
-        rb.velocity = new Vector2 (speedX, speedY);
+        if (!isInCombat)
+        {
+            rb.velocity = new Vector2(speedX, speedY);
+        }
     }
 
     public void moveToSpawn(GameObject spawn)
@@ -57,13 +76,34 @@ public class PlayerController : MonoBehaviour
         transform.position = spawn.transform.position;
     }
 
-    private void CheckEnemyEncounter()
+    IEnumerator CheckEnemyEncounter()
     {
+        isCoroutineCheckEnemyRunning = true;
+        Debug.Log("Coroutine Called");
         // Check 
+        if (Random.Range(1, 101) <= 10)
+        {
+            Debug.Log("Combat Triggered");
+            LoadEnemyCombat();
+        }
+        yield return new WaitForSeconds(1);
+        isCoroutineCheckEnemyRunning = false;
     }
 
     private void LoadEnemyCombat()
     {
         SceneController.instance.ToCombat();
+    }
+
+    public void OnLoadScene()
+    {
+        rb.velocity = Vector2.zero;
+        isInCombat = false;
+    }
+
+    public void OnLoadCombat()
+    {
+        rb.velocity = Vector2.zero;
+        isInCombat = true;
     }
 }

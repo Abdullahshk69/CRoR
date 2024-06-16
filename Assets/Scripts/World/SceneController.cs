@@ -46,24 +46,26 @@ public class SceneController : MonoBehaviour
 
     public void ToHallway()
     {
+        Invoke(nameof(PlayerMovement), 1f);
         nextScene = "TopFloor - Hallway";
         StartCoroutine(LoadNextScene());
-
     }
     public void ToStairs()
     {
+        Invoke(nameof(PlayerMovement), 1f);
         nextScene = "TopFloor - Stairs";
         StartCoroutine(LoadNextScene());
-
+        
     }
     public void ToThroneRoom()
     {
+        Invoke(nameof(PlayerMovement), 1f);
         nextScene = "TopFloor -Throne Room";
         StartCoroutine(LoadNextScene());
-
     }
     public void ToCombat()
     {
+        PlayerController.instance.OnLoadCombat();
         nextScene = "Combat";
         StartCoroutine(LoadNextScene());
     }
@@ -76,6 +78,11 @@ public class SceneController : MonoBehaviour
     {
         nextScene = "Lose";
         StartCoroutine(LoadNextScene());
+    }
+
+    public void PlayerMovement()
+    {
+        PlayerController.instance.OnLoadScene();
     }
 
     IEnumerator LoadNextScene()
@@ -94,6 +101,14 @@ public class SceneController : MonoBehaviour
             {
                 cam.SetActive(false);
             }
+        }
+    }
+
+    public void SceneLoaded()
+    {
+        if(scene!="Combat")
+        {
+            PlayerController.instance.OnLoadScene();
         }
     }
 }

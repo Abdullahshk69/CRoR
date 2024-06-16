@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/World/Top Floor/TopFloor - Stairs.unity
     guid: 176f7628c0d8e0743bb96b1378cafe5a
+  - enabled: 1
+    path: Assets/Scenes/Combat/Combat - Abdullah.unity
+    guid: 50f629f2fffb40b429569cf4caf3a197
   m_configObjects: {}
