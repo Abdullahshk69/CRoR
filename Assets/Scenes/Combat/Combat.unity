@@ -1051,10 +1051,18 @@ PrefabInstance:
       propertyPath: m_AnchorMin.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6509976981660473086, guid: edbe25b48a1991e4ca7d7ee2b01e48a7, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: e629bc32e4f6b4044b4e43835399443d, type: 2}
     - target: {fileID: 6510055143691887704, guid: edbe25b48a1991e4ca7d7ee2b01e48a7, type: 3}
       propertyPath: m_CullTransparentMesh
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7827450380387150750, guid: edbe25b48a1991e4ca7d7ee2b01e48a7, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -306201005, guid: 22cb83b74593c7e4fbafca47ac5621cb, type: 3}
     - target: {fileID: 8066239126098276880, guid: edbe25b48a1991e4ca7d7ee2b01e48a7, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1515,7 +1523,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c25632f07dc00b43bc1eee163a78c88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unitName: Soliel
+  unitName: Soleil
   maxHP: 100
   attack: 20
   speed: 10
