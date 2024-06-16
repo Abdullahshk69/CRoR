@@ -472,7 +472,7 @@ public class BattleSystem : MonoBehaviour
             Invoke(nameof(EnablePlayerSpriteAndScript), 0.9f);
 
             //Win screen
-            SceneController.instance.ToHallway();
+            ReturnToMap();
         }
         else if (battleState == BattleState.LOST)
         {
@@ -484,7 +484,7 @@ public class BattleSystem : MonoBehaviour
         {
             dialogueText.text = "You successfully fled the battle!";
             Invoke(nameof(EnablePlayerSpriteAndScript), 0.9f);
-            SceneController.instance.ToHallway();
+            ReturnToMap();
         }
     }
 
@@ -583,5 +583,24 @@ public class BattleSystem : MonoBehaviour
     private void DisablePlayerSpriteAndScript()
     {
         player.GetComponent<SpriteRenderer>().enabled = false;
+    }
+
+    private void ReturnToMap()
+    {
+        if (SceneController.instance.getScene() == "TopFloor - Hallway")
+        {
+            SceneController.instance.updateScene();
+            SceneController.instance.ToHallway();
+        }
+        else if (SceneController.instance.getScene() == "TopFloor - Stairs")
+        {
+            SceneController.instance.updateScene();
+            SceneController.instance.ToStairs();
+        }
+        else if (SceneController.instance.getScene() == "TopFloor -Throne Room")
+        {
+            SceneController.instance.updateScene();
+            SceneController.instance.ToThroneRoom();
+        }
     }
 }

@@ -28,8 +28,6 @@ public class PlayerController : MonoBehaviour
     {
         if (!isInCombat)
         {
-
-
             speedX = Input.GetAxisRaw("Horizontal") * Speed;
             speedY = Input.GetAxisRaw("Vertical") * Speed;
 
