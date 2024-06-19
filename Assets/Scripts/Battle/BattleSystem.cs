@@ -630,9 +630,9 @@ public class BattleSystem : MonoBehaviour
     /// <returns></returns>
     IEnumerator DamageFlash(Unit unit)
     {
-        //VFXController.instance.moveVFX(unit.gameObject.transform);
-        //VFXController.instance.playVFX(2);
-        //yield return new WaitForSeconds(0.4f);
+        VFXController.instance.moveVFX(unit.gameObject.transform);
+        VFXController.instance.playVFX(2);
+        yield return new WaitForSeconds(0.4f);
 
         unit.gameObject.GetComponent<SpriteRenderer>().enabled = false;
         yield return new WaitForSeconds(0.2f);
