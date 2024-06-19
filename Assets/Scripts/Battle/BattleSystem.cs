@@ -24,6 +24,10 @@ public class BattleSystem : MonoBehaviour
     private GameObject player;
     private GameObject[] players;
     private GameObject[] enemies;
+    [SerializeField] private GameObject prefabEnemy;
+    [SerializeField] private GameObject prefabEnemyUI;
+    [SerializeField] private GameObject parentEnemyDisplay;
+    [SerializeField] private GameObject parentEnemyZone;
 
     private Unit[] playerUnit;
     private Unit[] enemyUnit;
@@ -36,7 +40,7 @@ public class BattleSystem : MonoBehaviour
     [SerializeField] TextMeshProUGUI dialogueText;
 
     [SerializeField] GameObject[] playerUI;
-    [SerializeField] GameObject[] enemyUI;
+    GameObject[] enemyUI;
     [SerializeField] GameObject UImenu;
     [SerializeField] GameObject optionsMenu;
 
@@ -53,9 +57,10 @@ public class BattleSystem : MonoBehaviour
         battleState = BattleState.START;
 
         players = GameObject.FindGameObjectsWithTag("PlayerCombat");
-        enemies = GameObject.FindGameObjectsWithTag("Enemy");
-        player = GameObject.FindGameObjectWithTag("Player");
 
+        player = GameObject.FindGameObjectWithTag("Player");
+        //FindObjects();
+        RandomizeEnemy();
         DisablePlayerSpriteAndScript();
 
         SetEnemyScriptActive(false);
@@ -101,6 +106,39 @@ public class BattleSystem : MonoBehaviour
 
 
         StartCoroutine(SetupBattle());
+    }
+
+    private void RandomizeEnemy()
+    {
+        int rand = UnityEngine.Random.Range(1, 5);
+        enemies = new GameObject[rand];
+        enemyUI = new GameObject[rand];
+
+        // Instantiate Objects
+        for (int i = 0; i < rand; i++)
+        {
+            enemies[i] = Instantiate(prefabEnemy);
+            enemyUI[i] = Instantiate(prefabEnemyUI);
+        }
+
+        // Assign them parents
+        for (int i = 0; i < rand; i++)
+        {
+            enemies[i].transform.SetParent(parentEnemyZone.transform, false);
+            enemyUI[i].transform.SetParent(parentEnemyDisplay.transform, false);
+            //enemies[i].transform.parent = parentEnemyZone.transform;
+            //enemyUI[i].transform.parent = parentEnemyDisplay.transform;
+            //parentEnemyZone.transform.parent = enemies[i].transform;
+            //parentEnemyDisplay.transform.parent = enemyUI[i].transform;
+        }
+    }
+
+    /// <summary>
+    /// Find enemies gameObjects
+    /// </summary>
+    private void FindObjects()
+    {
+        enemies = GameObject.FindGameObjectsWithTag("Enemy");
     }
 
     /// <summary>
@@ -161,11 +199,20 @@ public class BattleSystem : MonoBehaviour
         turnIndex = 0;
     }
 
+    /// <summary>
+    /// Sort units
+    /// </summary>
+    /// <param name="units"></param>
     void UnitSort(Unit[] units)
     {
         Array.Sort(units, new UnitComparer());
     }
 
+    /// <summary>
+    /// Sort Hud based on units
+    /// </summary>
+    /// <param name="units"></param>
+    /// <param name="huds"></param>
     void UnitSort(Unit[] units, BattleHUD[] huds)
     {
         Array.Sort(units, huds, new UnitComparer());
@@ -275,6 +322,10 @@ public class BattleSystem : MonoBehaviour
         //StartCoroutine(PlayerAttack());
     }
 
+    /// <summary>
+    /// Activate the ClickEnemy script
+    /// </summary>
+    /// <param name="active"></param>
     void SetEnemyScriptActive(bool active)
     {
         foreach (GameObject enemy in enemies)
@@ -283,6 +334,10 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// A function to select an enemy. Using another script, an enemy can be selected.
+    /// </summary>
+    /// <param name="unit"></param>
     public void SelectEnemy(Unit unit)
     {
         if (unit.isActiveAndEnabled)
@@ -480,7 +535,7 @@ public class BattleSystem : MonoBehaviour
             // Lose Screen
             SceneController.instance.Lose();
         }
-        else if(battleState == BattleState.FLEE)
+        else if (battleState == BattleState.FLEE)
         {
             dialogueText.text = "You successfully fled the battle!";
             Invoke(nameof(EnablePlayerSpriteAndScript), 0.9f);
@@ -507,6 +562,13 @@ public class BattleSystem : MonoBehaviour
         StartCoroutine(Flee());
     }
 
+    /// <summary>
+    /// Flee Mechanic:
+    /// 50% chance to flee.
+    /// You sacrifice your turn to flee.
+    /// Turn ends regardless.
+    /// </summary>
+    /// <returns></returns>
     IEnumerator Flee()
     {
         int rand = UnityEngine.Random.Range(0, 100);
@@ -526,6 +588,9 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Disable Player HUD
+    /// </summary>
     void DisablePlayerHUD()
     {
         foreach (GameObject hud in playerUI)
@@ -534,6 +599,9 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Enable Player HUD
+    /// </summary>
     void EnablePlayerHUD()
     {
         for (int i = 0; i < playerUnit.Length; i++)
@@ -545,11 +613,20 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// A general function to disable a game object
+    /// </summary>
+    /// <param name="gameObject"></param>
     void DisableObject(GameObject gameObject)
     {
         gameObject.SetActive(false);
     }
 
+    /// <summary>
+    /// Makes the enemy unit flash.
+    /// </summary>
+    /// <param name="unit"></param>
+    /// <returns></returns>
     IEnumerator DamageFlash(Unit unit)
     {
         unit.gameObject.GetComponent<SpriteRenderer>().enabled = false;
@@ -561,6 +638,11 @@ public class BattleSystem : MonoBehaviour
         unit.gameObject.GetComponent<SpriteRenderer>().enabled = true;
     }
 
+    /// <summary>
+    /// Makes the Player HUD flash.
+    /// </summary>
+    /// <param name="hud"></param>
+    /// <returns></returns>
     IEnumerator DamageFlash(BattleHUD hud)
     {
         Transform portrait = hud.gameObject.transform.GetChild(0);
@@ -575,16 +657,25 @@ public class BattleSystem : MonoBehaviour
         character.GetComponent<Image>().enabled = true;
     }
 
+    /// <summary>
+    /// Enables a player's world sprite and movement script.
+    /// </summary>
     private void EnablePlayerSpriteAndScript()
     {
         player.GetComponent<SpriteRenderer>().enabled = true;
     }
 
+    /// <summary>
+    /// Disables a player's world sprite and movement script.
+    /// </summary>
     private void DisablePlayerSpriteAndScript()
     {
         player.GetComponent<SpriteRenderer>().enabled = false;
     }
 
+    /// <summary>
+    /// Returns the player to the map where the battle got triggered from.
+    /// </summary>
     private void ReturnToMap()
     {
         if (SceneController.instance.getScene() == "TopFloor - Hallway")
@@ -604,3 +695,4 @@ public class BattleSystem : MonoBehaviour
         }
     }
 }
+

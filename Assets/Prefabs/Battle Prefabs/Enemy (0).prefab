@@ -126,7 +126,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitName: Corruption
-  maxHP: 50
+  maxHP: 20
   attack: 5
   speed: 2
   level: 1

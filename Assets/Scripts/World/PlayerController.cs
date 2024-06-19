@@ -82,7 +82,7 @@ public class PlayerController : MonoBehaviour
         if(Physics2D.OverlapCircle(transform.position, 0.2f, spawnEnemy))
         {
             // Check 
-            if (Random.Range(1, 101) <= 10)
+            if (Random.Range(1, 101) <= 90)
             {
                 Debug.Log("Combat Triggered");
                 LoadEnemyCombat();
