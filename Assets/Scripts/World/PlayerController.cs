@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     bool isCoroutineCheckEnemyRunning = false;
     bool isInCombat = false;
     [SerializeField] private LayerMask spawnEnemy;
+    bool combatTriggered = false;
 
     void Start()
     {
@@ -63,6 +64,13 @@ public class PlayerController : MonoBehaviour
                     StartCoroutine(CheckEnemyEncounter());
                 }
             }
+
+            if (!combatTriggered && transform.position.x > 15)
+            {
+                Debug.Log("Forced Combat Triggered");
+                combatTriggered = true;
+                LoadEnemyCombat();
+            }
         }
     }
 
@@ -89,6 +97,7 @@ public class PlayerController : MonoBehaviour
             if (Random.Range(1, 101) <= 20)
             {
                 Debug.Log("Combat Triggered");
+                combatTriggered = true;
                 LoadEnemyCombat();
             }
         }
