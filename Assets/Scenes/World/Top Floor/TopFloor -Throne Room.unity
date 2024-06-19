@@ -7279,7 +7279,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitName: King
   maxHP: 100
-  attack: 20
+  attack: 5
   speed: 5
   level: 1
 --- !u!1 &1255922152
@@ -9355,8 +9355,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitName: Soliel
-  maxHP: 150
-  attack: 10
+  maxHP: 50
+  attack: 20
   speed: 7
   level: 1
 --- !u!1 &2044911273
