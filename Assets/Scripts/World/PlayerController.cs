@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
     bool isCoroutineCheckEnemyRunning = false;
     bool isInCombat = false;
+    [SerializeField] private LayerMask spawnEnemy;
 
     void Start()
     {
@@ -78,11 +79,14 @@ public class PlayerController : MonoBehaviour
     {
         isCoroutineCheckEnemyRunning = true;
         Debug.Log("Coroutine Called");
-        // Check 
-        if (Random.Range(1, 101) <= 10)
+        if(Physics2D.OverlapCircle(transform.position, 0.2f, spawnEnemy))
         {
-            Debug.Log("Combat Triggered");
-            LoadEnemyCombat();
+            // Check 
+            if (Random.Range(1, 101) <= 10)
+            {
+                Debug.Log("Combat Triggered");
+                LoadEnemyCombat();
+            }
         }
         yield return new WaitForSeconds(1);
         isCoroutineCheckEnemyRunning = false;
