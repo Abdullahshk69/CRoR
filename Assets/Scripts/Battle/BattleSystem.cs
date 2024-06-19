@@ -630,6 +630,8 @@ public class BattleSystem : MonoBehaviour
     /// <returns></returns>
     IEnumerator DamageFlash(Unit unit)
     {
+        AudioManager.instance.playHitSound();
+
         VFXController.instance.moveVFX(unit.gameObject.transform);
         VFXController.instance.playVFX(2);
         yield return new WaitForSeconds(0.4f);
@@ -652,6 +654,8 @@ public class BattleSystem : MonoBehaviour
     {
         Transform portrait = hud.gameObject.transform.GetChild(0);
         Transform character = portrait.GetChild(1);
+
+        AudioManager.instance.playHitSound();
 
         //VFXController.instance.moveVFX(character.transform);
         //VFXController.instance.playVFX(3);

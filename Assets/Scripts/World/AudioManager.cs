@@ -7,7 +7,8 @@ using static Unity.VisualScripting.Member;
 public class AudioManager : MonoBehaviour
 {
     public static AudioManager instance;
-    private AudioSource source;
+    [SerializeField] private AudioSource bgmSource;
+    [SerializeField] private AudioSource vfxSource;
 
     [SerializeField] private float volume = 0.5f;
     [SerializeField] private float fadeDuration = 1;
@@ -21,6 +22,9 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioClip winBgm;
     [SerializeField] private AudioClip loseBgm;
 
+    [Header("SFXs")]
+    [SerializeField] private AudioClip hitSound;
+
     private void Awake()
     {
         if (instance == null)
@@ -32,8 +36,7 @@ public class AudioManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        source = GetComponent<AudioSource>();
-        source.volume = 0;
+        bgmSource.volume = 0;
         currentVolume = volume;
 
         unmuteMusic();
@@ -77,11 +80,11 @@ public class AudioManager : MonoBehaviour
     IEnumerator fadeMusic()
     {
         float targetVolume = currentVolume;
-        float startVolume = source.volume;
+        float startVolume = bgmSource.volume;
         while (time < fadeDuration)
         {
             time += Time.deltaTime;
-            source.volume = Mathf.Lerp(startVolume, targetVolume, time / fadeDuration);
+            bgmSource.volume = Mathf.Lerp(startVolume, targetVolume, time / fadeDuration);
             yield return null;
         }
 
@@ -90,35 +93,42 @@ public class AudioManager : MonoBehaviour
 
     IEnumerator fadeMusic(AudioClip nextClip)
     {
-        if (nextClip == source.clip)
+        if (nextClip == bgmSource.clip)
         {
             yield break;
         }
 
         time = 0f;
         float targetVolume = 0f;
-        float startVolume = source.volume;
+        float startVolume = bgmSource.volume;
         while (time < fadeDuration)
         {
             time += Time.deltaTime;
-            source.volume = Mathf.Lerp(startVolume, targetVolume, time / fadeDuration);
+            bgmSource.volume = Mathf.Lerp(startVolume, targetVolume, time / fadeDuration);
             yield return null;
         }
 
-        source.Stop();
-        source.clip = nextClip;
-        source.Play();
+        bgmSource.Stop();
+        bgmSource.clip = nextClip;
+        bgmSource.Play();
 
         time = 0f;
         targetVolume = volume;
-        startVolume = source.volume;
+        startVolume = bgmSource.volume;
         while (time < fadeDuration)
         {
             time += Time.deltaTime;
-            source.volume = Mathf.Lerp(startVolume, targetVolume, time / fadeDuration);
+            bgmSource.volume = Mathf.Lerp(startVolume, targetVolume, time / fadeDuration);
             yield return null;
         }
 
         yield break;
+    }
+
+    public void playHitSound()
+    {
+        vfxSource.Stop();
+        vfxSource.clip = hitSound;
+        vfxSource.Play();
     }
 }
