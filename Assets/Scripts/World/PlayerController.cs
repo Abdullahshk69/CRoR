@@ -21,6 +21,10 @@ public class PlayerController : MonoBehaviour
         {
             instance = this;
         }
+        else
+        {
+            Destroy(gameObject);
+        }
 
         rb = GetComponent<Rigidbody2D>();
     }

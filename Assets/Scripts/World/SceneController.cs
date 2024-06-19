@@ -48,35 +48,40 @@ public class SceneController : MonoBehaviour
     {
         Invoke(nameof(PlayerMovement), 1f);
         nextScene = "TopFloor - Hallway";
+        AudioManager.instance.changeMusic("worldBgm");
         StartCoroutine(LoadNextScene());
     }
     public void ToStairs()
     {
         Invoke(nameof(PlayerMovement), 1f);
         nextScene = "TopFloor - Stairs";
+        AudioManager.instance.changeMusic("worldBgm");
         StartCoroutine(LoadNextScene());
-        
     }
     public void ToThroneRoom()
     {
         Invoke(nameof(PlayerMovement), 1f);
         nextScene = "TopFloor -Throne Room";
+        AudioManager.instance.changeMusic("worldBgm");
         StartCoroutine(LoadNextScene());
     }
     public void ToCombat()
     {
         PlayerController.instance.OnLoadCombat();
         nextScene = "Combat";
+        AudioManager.instance.changeMusic("combatBgm");
         StartCoroutine(LoadNextScene());
     }
     public void Win()
     {
         nextScene = "Win";
+        AudioManager.instance.changeMusic("winBgm");
         StartCoroutine(LoadNextScene());
     }
      public void Lose()
     {
         nextScene = "Lose";
+        AudioManager.instance.changeMusic("loseBgm");
         StartCoroutine(LoadNextScene());
     }
 
