@@ -8,6 +8,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR;
+using static UnityEngine.UI.CanvasScaler;
 
 // BattleStates define the state of the battle
 public enum BattleState { START, PLAYERTURN, ENEMYTURN, FLEE, WON, LOST }
@@ -629,6 +630,10 @@ public class BattleSystem : MonoBehaviour
     /// <returns></returns>
     IEnumerator DamageFlash(Unit unit)
     {
+        //VFXController.instance.moveVFX(unit.gameObject.transform);
+        //VFXController.instance.playVFX(2);
+        //yield return new WaitForSeconds(0.4f);
+
         unit.gameObject.GetComponent<SpriteRenderer>().enabled = false;
         yield return new WaitForSeconds(0.2f);
         unit.gameObject.GetComponent<SpriteRenderer>().enabled = true;
@@ -647,6 +652,10 @@ public class BattleSystem : MonoBehaviour
     {
         Transform portrait = hud.gameObject.transform.GetChild(0);
         Transform character = portrait.GetChild(1);
+
+        //VFXController.instance.moveVFX(character.transform);
+        //VFXController.instance.playVFX(3);
+        //yield return new WaitForSeconds(0.4f);
 
         character.GetComponent<Image>().enabled = false;
         yield return new WaitForSeconds(0.2f);
