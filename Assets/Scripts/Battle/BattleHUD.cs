@@ -14,6 +14,8 @@ public class BattleHUD : MonoBehaviour
     private float time;
     public int currentHealth;
 
+    public TextMeshProUGUI NameText => nameText;
+
     /// <summary>
     /// Sets the Hud for a particular Unit
     /// </summary>

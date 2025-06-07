@@ -1,14 +1,8 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.XR;
-using static UnityEngine.UI.CanvasScaler;
 
 // BattleStates define the state of the battle
 public enum BattleState { START, PLAYERTURN, ENEMYTURN, FLEE, WON, LOST }
@@ -25,7 +19,7 @@ public class BattleSystem : MonoBehaviour
     private GameObject player;
     private GameObject[] players;
     private GameObject[] enemies;
-    [SerializeField] private GameObject prefabEnemy;
+    [SerializeField] private GameObject[] prefabEnemies;
     [SerializeField] private GameObject prefabEnemyUI;
     [SerializeField] private GameObject parentEnemyDisplay;
     [SerializeField] private GameObject parentEnemyZone;
@@ -104,8 +98,6 @@ public class BattleSystem : MonoBehaviour
 
 
         // Deactivate all Huds
-
-
         StartCoroutine(SetupBattle());
     }
 
@@ -118,7 +110,7 @@ public class BattleSystem : MonoBehaviour
         // Instantiate Objects
         for (int i = 0; i < rand; i++)
         {
-            enemies[i] = Instantiate(prefabEnemy);
+            enemies[i] = Instantiate(prefabEnemies[UnityEngine.Random.Range(0, prefabEnemies.Length)]);
             enemyUI[i] = Instantiate(prefabEnemyUI);
         }
 
@@ -226,25 +218,20 @@ public class BattleSystem : MonoBehaviour
     /// </summary>
     void TurnSelector()
     {
-        Debug.Log("TurnIndex == " + turnIndex);
-        Debug.Log("Tag == " + turn[turnIndex].tag);
         // Check the tag of the object
         // Then call the turn function based on the tag
         DisablePlayerHUD();
         if (turn[turnIndex].tag == "PlayerCombat")
         {
-            Debug.Log("Player's Turn at index == " + turnIndex);
             playerTurnCounter++;
             // check if the player is alive
             if (turn[turnIndex].IsDead())
             {
-                Debug.Log("Dead player on index == " + turnIndex);
                 NextTurn();
             }
 
             else
             {
-                Debug.Log("Player is alive and can attack on turn == " + turnIndex);
                 battleState = BattleState.PLAYERTURN;
                 playerHUD[playerTurnCounter].gameObject.SetActive(true);
                 UImenu.SetActive(true);
@@ -259,7 +246,6 @@ public class BattleSystem : MonoBehaviour
             // Check if the enemy is alive
             if (turn[turnIndex].IsDead())
             {
-                Debug.Log("Dead Enemy at index: " + turnIndex);
                 NextTurn();
             }
 
@@ -427,13 +413,11 @@ public class BattleSystem : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log("Next Turn from player at index" + turnIndex);
                     NextTurn();
                 }
             }
             else
             {
-                Debug.Log("Next Turn from player at index" + turnIndex);
                 NextTurn();
             }
         }
@@ -446,7 +430,6 @@ public class BattleSystem : MonoBehaviour
     /// <returns>Waits for 1 second</returns>
     IEnumerator EnemyTurn()
     {
-        Debug.Log("Enemy: " + turn[turnIndex].name + "Fights! Index: " + turnIndex);
         // Show all alive players
         // Hide the menu
         UImenu.SetActive(false);
@@ -459,6 +442,18 @@ public class BattleSystem : MonoBehaviour
         int attack = turn[turnIndex].Attack();
         bool isDead = false;
         int rand = 0;
+
+        int selectedEnemyIndex = 0;
+        for (int i = 0; i < enemyUnit.Length; i++)
+        {
+            if (enemyUnit[i] == turn[turnIndex])
+            {
+                selectedEnemyIndex = i;
+                break;
+            }
+        }
+
+        StartCoroutine(FlashName(enemyHUD[selectedEnemyIndex].NameText));
 
         if (attack == -1)
         {
@@ -488,11 +483,8 @@ public class BattleSystem : MonoBehaviour
             do
             {
                 rand = UnityEngine.Random.Range(0, players.Length);
-                Debug.Log("Random: " + rand);
-                Debug.Log("IsPlayerDead: " + playerUnit[rand].IsDead());
             } while (playerUnit[rand].IsDead());
 
-            Debug.Log("Dealing Damage to player on index: " + rand + "\nPlayer name is " + playerUnit[rand].GetName());
             isDead = playerUnit[rand].TakeDamage(attack);
             playerHUD[rand].SetHP(playerUnit[rand].GetCurrentHP());
 
@@ -503,16 +495,25 @@ public class BattleSystem : MonoBehaviour
             // Check if king is dead
             if (isDead && playerUnit[rand].GetName() == "King")
             {
-                Debug.Log("Game Over");
                 battleState = BattleState.LOST;
                 EndBattle();
             }
             else
             {
-                Debug.Log("Next Turn from enemy at index" + turnIndex);
                 NextTurn();
             }
         }
+    }
+
+    private IEnumerator FlashName(TextMeshProUGUI name)
+    {
+        for(int i=0;i<5;++i)
+        {
+            name.enabled = !name.enabled;
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        name.enabled = true;
     }
 
     /// <summary>

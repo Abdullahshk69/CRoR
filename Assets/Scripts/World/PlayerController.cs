@@ -89,7 +89,6 @@ public class PlayerController : MonoBehaviour
     IEnumerator CheckEnemyEncounter()
     {
         isCoroutineCheckEnemyRunning = true;
-        Debug.Log("Coroutine Called");
         if(Physics2D.OverlapCircle(transform.position, 0.2f, spawnEnemy))
         {
             // Check 
